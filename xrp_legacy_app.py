@@ -13,17 +13,16 @@ st.subheader("1. Configure Your Legacy Vault")
 addresses_input = st.text_area("Wallets You want to Vault (one per line)", value="rYourTangemAddressHere")
 addresses = [addr.strip() for addr in addresses_input.splitlines() if addr.strip()]
 
-total_xrp = st.number_input("Total XRP Being Managed", value=2000.0, min_value=0.0, step=1.0)
-
 birthday = st.date_input("Beneficiary Birthday", value=datetime(2010, 6, 6).date(), format="MM/DD/YYYY")
 st.caption("Release dates are calculated from the birth date above.")
 
 generational_mode = st.checkbox("**Never Sell / Generational Legacy Mode** (Principal stays locked forever — only yield accessible)", value=False)
 
-est_price = st.number_input("Estimated XRP Value (USD)", value=5.0, min_value=0.0, step=0.1)
-
 # === Redemption Schedule ===
 st.subheader("Redemption Schedule")
+
+total_xrp = st.number_input("Total XRP Being Managed", value=2000.0, min_value=0.0, step=1.0)
+est_price = st.number_input("Estimated XRP Value (USD)", value=5.0, min_value=0.0, step=0.1)
 
 if "redemptions" not in st.session_state:
     st.session_state.redemptions = [(16, 0.5), (18, 10.0), (21, 10.0), (30, 10.0), (40, 20.0), (50, 49.5)]
@@ -62,10 +61,15 @@ for i in range(len(st.session_state.redemptions)):
 st.subheader("Ultimate Fail-Safe Unlock")
 fail_safe_years = st.number_input("All remaining funds unlock after (years from birthday)", value=100, min_value=50, step=1)
 
+# === Support This Tool - Directly under Fail-Safe ===
+st.subheader("💚 Support This Tool")
+donation_amount = st.number_input("Suggested Donation Amount (XRP)", value=10.0, min_value=0.0, step=1.0)
+st.info("Thank you for supporting this free tool! Your donation will be sent to the creator.")
+
 st.subheader("Adding Future Deposits")
 st.markdown("You can add more XRP to the vault anytime. New deposits earn yield and follow the same rules.")
 
-# === RISK ACKNOWLEDGMENT & FINALIZE ===
+# === RISK & FINALIZE ===
 st.markdown("---")
 st.subheader("2. Final Risk Acknowledgment & Download")
 
@@ -118,9 +122,8 @@ if __name__ == "__main__":
 st.subheader("3. What To Do Next")
 st.markdown("""
 1. Download the script above.
-2. Run it on your device (Pythonista on iPhone, Termux on Android, or any Python environment).
-3. Follow the printed instructions to create vault deposits and redemption notices.
-4. Sign all transactions with **Xaman + Tangem**.
+2. Run it on your device (Pythonista / Termux / Python).
+3. Follow the printed instructions and sign transactions with Xaman + Tangem.
 """)
 
 st.caption("Test everything on XRPL Testnet first. Not financial or legal advice.")
