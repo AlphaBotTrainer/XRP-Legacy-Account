@@ -60,7 +60,7 @@ for i in range(len(st.session_state.redemptions)):
 st.subheader("Ultimate Fail-Safe Unlock")
 fail_safe_years = st.number_input("All remaining funds unlock after (years from birthday)", value=100, min_value=50, step=1)
 
-# Support This Tool - Directly under Fail-Safe as requested
+# Support This Tool - Directly under Fail-Safe
 st.subheader("💚 Support This Tool")
 donation_amount = st.number_input("Suggested Donation Amount (XRP)", value=10.0, min_value=0.0, step=1.0)
 st.info("Thank you for supporting this free tool! Your donation will be sent to the creator.")
@@ -115,12 +115,5 @@ if __name__ == "__main__":
 '''
 
     st.download_button("📥 Download Finalized Script", data=script_content, file_name="xrp_legacy_yield_vault.py", mime="text/plain")
-
-st.subheader("3. What To Do Next")
-st.markdown("""
-1. Download the script above.
-2. Run it on your device (Pythonista on iPhone, Termux on Android, or any Python environment).
-3. Follow the printed instructions and sign transactions with Xaman + Tangem.
-""")
 
 st.caption("Test everything on XRPL Testnet first. Not financial or legal advice.")
