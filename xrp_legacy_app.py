@@ -8,8 +8,8 @@ st.set_page_config(page_title="XRP Legacy Yield Vault Builder", layout="centered
 st.title("🛡️ XRP Legacy Yield Vault Builder")
 st.markdown("**Sovereign • Yield-Earning • Time-Locked XRP Legacy**")
 
-# === YOUR HARD-CODED DONATION ADDRESS ===
-DONATION_ADDRESS = "rYourActualTangemXRPAddressHere"   # ← REPLACE THIS WITH YOUR REAL ADDRESS
+# === HARD-CODED DONATION ADDRESS ===
+DONATION_ADDRESS = "rYourActualTangemXRPAddressHere"   # ← REPLACE WITH YOUR REAL ADDRESS
 
 # === BUILD SECTION ===
 st.subheader("1. Configure Your Legacy Vault")
@@ -26,7 +26,7 @@ generational_mode = st.checkbox("**Never Sell / Generational Legacy Mode** (Prin
 
 est_price = st.number_input("Estimated XRP Value (USD)", value=5.0, min_value=0.0, step=0.1)
 
-# Redemption Schedule (dynamic)
+# Redemption Schedule
 st.subheader("Redemption Schedule")
 
 if "redemptions" not in st.session_state:
@@ -58,10 +58,7 @@ for i in range(len(st.session_state.redemptions)):
 st.subheader("Ultimate Fail-Safe Unlock")
 fail_safe_years = st.number_input("All remaining funds unlock after (years from birthday)", value=100, min_value=50, step=1)
 
-st.subheader("Adding Future Deposits")
-st.markdown("You can add more XRP to the vault anytime. New deposits earn yield and follow the same rules.")
-
-# === RISK & FINALIZE ===
+# === RISK ACKNOWLEDGMENT & FINALIZE ===
 st.markdown("---")
 st.subheader("2. Final Risk Acknowledgment & Download")
 
@@ -111,10 +108,35 @@ if __name__ == "__main__":
 
     st.download_button("📥 Download Finalized Script", data=script_content, file_name="xrp_legacy_yield_vault.py", mime="text/plain")
 
-# === DONATION SECTION (Visible but address hidden from copy) ===
+# === NEXT STEPS (Section 3) ===
+st.subheader("3. What To Do Next")
+st.markdown("""
+1. Download the script above.
+2. Run it on your device (Pythonista on iPhone, Termux on Android, or any Python environment).
+3. Use the printed instructions to create Vault deposits and prepare redemption notices.
+4. Sign all transactions using **Xaman + your Tangem wallet**.
+5. For future deposits, use the `prepare_deposit()` function in the script.
+""")
+
+# === DONATION SECTION ===
 st.subheader("💚 Support This Tool")
 donation_amount = st.number_input("Suggested Donation Amount (XRP)", value=10.0, min_value=0.0, step=1.0)
 
-st.info("Thank you for supporting this free tool! Your donation will be sent to the hard-coded address in the generated script.")
+st.info("Thank you for supporting this free tool! Your donation will be sent to the creator.")
+
+st.code(DONATION_ADDRESS)
+
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("📋 Copy Address"):
+        st.success("✅ Address copied!")
+with col2:
+    if st.button("💸 Prepare Donation Transaction"):
+        st.info(f"**Ready-to-sign {donation_amount} XRP Donation**\\n\\nDestination: {DONATION_ADDRESS}\\nAmount: {donation_amount} XRP\\n\\nSign in Xaman + Tangem.")
+
+qr = qrcode.make(DONATION_ADDRESS)
+buf = BytesIO()
+qr.save(buf, format="PNG")
+st.image(buf.getvalue(), caption="Scan to Donate XRP (any amount)")
 
 st.caption("Test everything on XRPL Testnet first. Not financial or legal advice.")
