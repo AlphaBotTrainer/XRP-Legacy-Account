@@ -11,17 +11,16 @@ st.subheader("1. Configure Your Legacy Vault")
 addresses_input = st.text_area("Wallets You want to Vault (one per line)", value="rYourTangemAddressHere")
 addresses = [addr.strip() for addr in addresses_input.splitlines() if addr.strip()]
 
-total_xrp = st.number_input("Total XRP Being Managed", value=2000.0, min_value=0.0, step=1.0)
-
 birthday = st.date_input("Beneficiary Birthday", value=datetime(2010, 6, 6).date(), format="MM/DD/YYYY")
 st.caption("Release dates are calculated from the birth date above.")
 
 generational_mode = st.checkbox("**Never Sell / Generational Legacy Mode** (Principal stays locked forever — only yield accessible)", value=False)
 
-est_price = st.number_input("Estimated XRP Value (USD)", value=5.0, min_value=0.0, step=0.1)
-
 # === Redemption Schedule ===
 st.subheader("Redemption Schedule")
+
+total_xrp = st.number_input("Total XRP Being Managed", value=2000.0, min_value=0.0, step=1.0)
+est_price = st.number_input("Estimated XRP Value (USD)", value=5.0, min_value=0.0, step=0.1)
 
 if "redemptions" not in st.session_state:
     st.session_state.redemptions = [(16, 0.5), (18, 10.0), (21, 10.0), (30, 10.0), (40, 20.0), (50, 49.5)]
