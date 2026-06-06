@@ -8,6 +8,9 @@ st.set_page_config(page_title="XRP Legacy Yield Vault Builder", layout="centered
 st.title("🛡️ XRP Legacy Yield Vault Builder")
 st.markdown("**Sovereign • Yield-Earning • Time-Locked XRP Legacy**")
 
+# === YOUR HARD-CODED DONATION ADDRESS ===
+DONATION_ADDRESS = "rYourActualTangemXRPAddressHere"   # ← REPLACE THIS WITH YOUR REAL ADDRESS
+
 # === BUILD SECTION ===
 st.subheader("1. Configure Your Legacy Vault")
 
@@ -23,7 +26,7 @@ generational_mode = st.checkbox("**Never Sell / Generational Legacy Mode** (Prin
 
 est_price = st.number_input("Estimated XRP Value (USD)", value=5.0, min_value=0.0, step=0.1)
 
-# Redemption Schedule
+# Redemption Schedule (dynamic)
 st.subheader("Redemption Schedule")
 
 if "redemptions" not in st.session_state:
@@ -51,36 +54,14 @@ for i in range(len(st.session_state.redemptions)):
             st.rerun()
     st.session_state.redemptions[i] = (int(age), float(pct))
 
-redemptions = st.session_state.redemptions
-
 # Fail-Safe
 st.subheader("Ultimate Fail-Safe Unlock")
 fail_safe_years = st.number_input("All remaining funds unlock after (years from birthday)", value=100, min_value=50, step=1)
 
-# === SUPPORT / DONATION SECTION (Moved here as requested) ===
-st.subheader("💚 Support This Tool")
-donation_amount = st.number_input("Suggested Donation Amount (XRP)", value=10.0, min_value=0.0, step=1.0)
-YOUR_XRP_ADDRESS = "rYourRealTangemAddressHere"   # ← REPLACE WITH YOUR ACTUAL ADDRESS
-
-st.code(YOUR_XRP_ADDRESS)
-
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("📋 Copy Address"):
-        st.success("✅ Address copied!")
-with col2:
-    if st.button("💸 Prepare Donation Transaction"):
-        st.info(f"**Ready-to-sign {donation_amount} XRP Donation**\\n\\nDestination: {YOUR_XRP_ADDRESS}\\nAmount: {donation_amount} XRP")
-
-qr = qrcode.make(YOUR_XRP_ADDRESS)
-buf = BytesIO()
-qr.save(buf, format="PNG")
-st.image(buf.getvalue(), caption="Scan to Donate XRP (any amount)")
-
 st.subheader("Adding Future Deposits")
 st.markdown("You can add more XRP to the vault anytime. New deposits earn yield and follow the same rules.")
 
-# === RISK ACKNOWLEDGMENT & FINALIZE ===
+# === RISK & FINALIZE ===
 st.markdown("---")
 st.subheader("2. Final Risk Acknowledgment & Download")
 
@@ -105,9 +86,10 @@ if st.button("✅ Finalize & Download Script", type="primary", disabled=not (agr
 from datetime import datetime, timedelta
 
 BIRTHDAY = datetime({birthday.year}, {birthday.month}, {birthday.day})
-REDEMPTIONS = {redemptions}
+REDEMPTIONS = {st.session_state.redemptions}
 FAIL_SAFE_YEARS = {fail_safe_years}
 TOTAL_XRP = {total_xrp}
+DONATION_ADDRESS = "{DONATION_ADDRESS}"
 
 def main():
     print("=== Redemption Schedule ===")
@@ -119,11 +101,20 @@ def main():
         xrp_amount = TOTAL_XRP * (pct / 100.0)
         print(f"Age +{age} → {pct:.1f}% | {xrp_amount:.2f} XRP")
     print(f"\\n🔒 Fail-Safe: All remaining funds unlock by {{(BIRTHDAY + timedelta(days=365*FAIL_SAFE_YEARS)).date()}}")
+    
+    print("\\n=== Suggested Donation ===")
+    print(f"Send donation to: {{DONATION_ADDRESS}}")
 
 if __name__ == "__main__":
     main()
 '''
 
     st.download_button("📥 Download Finalized Script", data=script_content, file_name="xrp_legacy_yield_vault.py", mime="text/plain")
+
+# === DONATION SECTION (Visible but address hidden from copy) ===
+st.subheader("💚 Support This Tool")
+donation_amount = st.number_input("Suggested Donation Amount (XRP)", value=10.0, min_value=0.0, step=1.0)
+
+st.info("Thank you for supporting this free tool! Your donation will be sent to the hard-coded address in the generated script.")
 
 st.caption("Test everything on XRPL Testnet first. Not financial or legal advice.")
