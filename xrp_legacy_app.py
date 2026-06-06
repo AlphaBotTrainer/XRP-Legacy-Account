@@ -10,7 +10,7 @@ st.markdown("**Sovereign • Yield-Earning • Time-Locked XRP Legacy**")
 
 # === INTRODUCTION ===
 st.subheader("What You Are Building")
-st.markdown("This tool creates a legacy vault system with continuous yield while locked, time-based releases, and a fail-safe.")
+st.markdown("This tool creates a legacy vault system for XRP with continuous yield while locked, time-based releases, and a fail-safe.")
 
 # === BUILD SECTION ===
 st.subheader("1. Configure Your Legacy Vault")
@@ -23,27 +23,38 @@ birthday_str = st.text_input("Beneficiary Birthday (YYYY-MM-DD)", value="2010-06
 generational_mode = st.checkbox("**Never Sell / Generational Legacy Mode** (Principal stays locked forever — only yield accessible)", value=False)
 
 if generational_mode:
-    st.warning("⚠️ NOT RECOMMENDED FOR MOST — Principal never released.")
+    st.warning("⚠️ NOT RECOMMENDED FOR MOST USERS — Principal never released.")
     tranches = [(1.0, 9999)]
 else:
     use_single = st.checkbox("Use Single Release Date for All Funds", value=False)
     if use_single:
-        years = st.number_input("Release all funds after how many years?", value=30, min_value=1)
-        tranches = [(1.0, years)]
+        years = st.number_input("Release all funds after how many years?", value=30, min_value=1, step=1)
+        tranches = [(1.0, float(years))]
     else:
         st.subheader("Vesting / Redemption Schedule (Multiple Tranches)")
         tranches = []
-        default_pcts = [0.5, 10, 10, 10, 20, 49.5]
+        default_pcts = [0.5, 10.0, 10.0, 10.0, 20.0, 49.5]
         default_ages = [16, 18, 21, 30, 40, 50]
         for i in range(6):
             col_a, col_b = st.columns([1, 1])
             with col_a:
-                pct = st.number_input(f"Tranche {i+1} — Percentage (%)", 
-                                    value=default_pcts[i], min_value=0.0, max_value=100.0, step=0.1, key=f"pct_{i}")
+                pct = st.number_input(
+                    f"Tranche {i+1} — Percentage (%)", 
+                    value=default_pcts[i], 
+                    min_value=0.0, 
+                    max_value=100.0, 
+                    step=0.1, 
+                    key=f"pct_{i}"
+                )
             with col_b:
-                age = st.number_input(f"Tranche {i+1} — Release at age +", 
-                                    value=default_ages[i], min_value=0, step=1, key=f"age_{i}")
-            tranches.append((pct / 100.0, age))
+                age = st.number_input(
+                    f"Tranche {i+1} — Release at age +", 
+                    value=default_ages[i], 
+                    min_value=0, 
+                    step=1, 
+                    key=f"age_{i}"
+                )
+            tranches.append((float(pct) / 100.0, int(age)))
 
 # Fail-Safe
 st.subheader("Ultimate Fail-Safe Unlock")
@@ -58,11 +69,11 @@ st.subheader("2. Final Risk Acknowledgment & Download")
 
 st.error("**CRITICAL RISKS - READ CAREFULLY**")
 st.markdown("""
-- Irreversibility and long/permanent lock-up periods  
+- Irreversibility and long/permanent lock-up  
 - Variable / non-guaranteed yield  
 - XRP price volatility  
-- Technical, protocol, and self-custody risks  
-- Legal & tax obligations in your jurisdiction
+- Technical, protocol, and custody risks  
+- Legal & tax compliance in your jurisdiction
 """)
 
 name = st.text_input("Type your full name to confirm", placeholder="Your Full Name")
@@ -87,7 +98,7 @@ def main():
             print("Generational Mode: Principal locked forever (only yield accessible)")
             continue
         unlock_date = BIRTHDAY + timedelta(days=365 * years)
-        print(f"{{pct*100:.1f}}% unlocks {{unlock_date.date()}}")
+        print(f"{{pct*100:.1f}}% unlocks on {{unlock_date.date()}}")
     print(f"\\n🔒 Fail-Safe: All funds unlock by {{(BIRTHDAY + timedelta(days=365*FAIL_SAFE_YEARS)).date()}}")
 
 if __name__ == "__main__":
@@ -96,7 +107,7 @@ if __name__ == "__main__":
 
     st.download_button("📥 Download Finalized Script", data=script_content, file_name="xrp_legacy_yield_vault.py", mime="text/plain")
 
-# Donation section
+# Donation
 st.markdown("---")
 st.subheader("💚 Support This Tool")
 st.markdown("**Suggested Donation: 10 XRP**")
