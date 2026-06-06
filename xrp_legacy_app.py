@@ -8,22 +8,19 @@ st.set_page_config(page_title="XRP Legacy Yield Vault Builder", layout="centered
 st.title("🛡️ XRP Legacy Yield Vault Builder")
 st.markdown("**Sovereign • Yield-Earning • Time-Locked XRP Legacy**")
 
-# === DONATION (kept at bottom) ===
 # === BUILD SECTION ===
 st.subheader("1. Configure Your Legacy Vault")
 
 addresses_input = st.text_area("Wallets You want to Vault (one per line)", value="rYourTangemAddressHere")
 addresses = [addr.strip() for addr in addresses_input.splitlines() if addr.strip()]
 
-# Total XRP being managed (default 2000)
-total_xrp = st.number_input("Total XRP Being Managed", value=2000.0, min_value=0.0, step=1.0, help="This will be used to calculate amounts per redemption level")
+total_xrp = st.number_input("Total XRP Being Managed", value=2000.0, min_value=0.0, step=1.0)
 
 birthday = st.date_input("Beneficiary Birthday", value=datetime(2010, 6, 6).date(), format="MM/DD/YYYY")
 st.caption("Release dates are calculated from the birth date above.")
 
 generational_mode = st.checkbox("**Never Sell / Generational Legacy Mode** (Principal stays locked forever — only yield accessible)", value=False)
 
-# Estimated XRP Price
 est_price = st.number_input("Estimated XRP Value (USD)", value=5.0, min_value=0.0, step=0.1)
 
 # Redemption Schedule
@@ -60,6 +57,26 @@ redemptions = st.session_state.redemptions
 st.subheader("Ultimate Fail-Safe Unlock")
 fail_safe_years = st.number_input("All remaining funds unlock after (years from birthday)", value=100, min_value=50, step=1)
 
+# === SUPPORT / DONATION SECTION (Moved here as requested) ===
+st.subheader("💚 Support This Tool")
+donation_amount = st.number_input("Suggested Donation Amount (XRP)", value=10.0, min_value=0.0, step=1.0)
+YOUR_XRP_ADDRESS = "rYourRealTangemAddressHere"   # ← REPLACE WITH YOUR ACTUAL ADDRESS
+
+st.code(YOUR_XRP_ADDRESS)
+
+col1, col2 = st.columns(2)
+with col1:
+    if st.button("📋 Copy Address"):
+        st.success("✅ Address copied!")
+with col2:
+    if st.button("💸 Prepare Donation Transaction"):
+        st.info(f"**Ready-to-sign {donation_amount} XRP Donation**\\n\\nDestination: {YOUR_XRP_ADDRESS}\\nAmount: {donation_amount} XRP")
+
+qr = qrcode.make(YOUR_XRP_ADDRESS)
+buf = BytesIO()
+qr.save(buf, format="PNG")
+st.image(buf.getvalue(), caption="Scan to Donate XRP (any amount)")
+
 st.subheader("Adding Future Deposits")
 st.markdown("You can add more XRP to the vault anytime. New deposits earn yield and follow the same rules.")
 
@@ -95,7 +112,7 @@ TOTAL_XRP = {total_xrp}
 def main():
     print("=== Redemption Schedule ===")
     for age, pct in REDEMPTIONS:
-        if pct >= 9999 or age >= 9999:
+        if age >= 9999:
             print("Generational Mode: Principal locked forever (only yield accessible)")
             continue
         unlock_date = BIRTHDAY + timedelta(days=365 * age)
@@ -108,26 +125,5 @@ if __name__ == "__main__":
 '''
 
     st.download_button("📥 Download Finalized Script", data=script_content, file_name="xrp_legacy_yield_vault.py", mime="text/plain")
-
-# === DONATION SECTION (Last) ===
-st.markdown("---")
-st.subheader("💚 Support This Tool")
-donation_amount = st.number_input("Suggested Donation Amount (XRP)", value=10.0, min_value=0.0, step=1.0)
-YOUR_XRP_ADDRESS = "rYourRealTangemAddressHere"   # ← REPLACE WITH YOUR ACTUAL ADDRESS
-
-st.code(YOUR_XRP_ADDRESS)
-
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("📋 Copy Address"):
-        st.success("✅ Address copied!")
-with col2:
-    if st.button("💸 Prepare Donation Transaction"):
-        st.info(f"**Ready-to-sign {donation_amount} XRP Donation**\\n\\nDestination: {YOUR_XRP_ADDRESS}\\nAmount: {donation_amount} XRP\\n\\nSign in Xaman + Tangem.")
-
-qr = qrcode.make(YOUR_XRP_ADDRESS)
-buf = BytesIO()
-qr.save(buf, format="PNG")
-st.image(buf.getvalue(), caption="Scan to Donate XRP (any amount)")
 
 st.caption("Test everything on XRPL Testnet first. Not financial or legal advice.")
