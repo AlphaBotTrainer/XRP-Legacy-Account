@@ -13,16 +13,17 @@ st.subheader("1. Configure Your Legacy Vault")
 addresses_input = st.text_area("Wallets You want to Vault (one per line)", value="rYourTangemAddressHere")
 addresses = [addr.strip() for addr in addresses_input.splitlines() if addr.strip()]
 
+total_xrp = st.number_input("Total XRP Being Managed", value=2000.0, min_value=0.0, step=1.0)
+
 birthday = st.date_input("Beneficiary Birthday", value=datetime(2010, 6, 6).date(), format="MM/DD/YYYY")
 st.caption("Release dates are calculated from the birth date above.")
 
 generational_mode = st.checkbox("**Never Sell / Generational Legacy Mode** (Principal stays locked forever — only yield accessible)", value=False)
 
+est_price = st.number_input("Estimated XRP Value (USD)", value=5.0, min_value=0.0, step=0.1)
+
 # === Redemption Schedule ===
 st.subheader("Redemption Schedule")
-
-total_xrp = st.number_input("Total XRP Being Managed", value=2000.0, min_value=0.0, step=1.0)
-est_price = st.number_input("Estimated XRP Value (USD)", value=5.0, min_value=0.0, step=0.1)
 
 if "redemptions" not in st.session_state:
     st.session_state.redemptions = [(16, 0.5), (18, 10.0), (21, 10.0), (30, 10.0), (40, 20.0), (50, 49.5)]
@@ -31,7 +32,6 @@ if st.button("➕ Add Redemption Level"):
     st.session_state.redemptions.append((30, 10.0))
     st.rerun()
 
-# Headers
 header_cols = st.columns([1.5, 2, 2, 2.5, 1])
 header_cols[0].write("**Age +**")
 header_cols[1].write("**Percentage (%)**")
@@ -60,11 +60,6 @@ for i in range(len(st.session_state.redemptions)):
 # Fail-Safe
 st.subheader("Ultimate Fail-Safe Unlock")
 fail_safe_years = st.number_input("All remaining funds unlock after (years from birthday)", value=100, min_value=50, step=1)
-
-# === Support This Tool - Directly under Fail-Safe ===
-st.subheader("💚 Support This Tool")
-donation_amount = st.number_input("Suggested Donation Amount (XRP)", value=10.0, min_value=0.0, step=1.0)
-st.info("Thank you for supporting this free tool! Your donation will be sent to the creator.")
 
 st.subheader("Adding Future Deposits")
 st.markdown("You can add more XRP to the vault anytime. New deposits earn yield and follow the same rules.")
@@ -119,11 +114,32 @@ if __name__ == "__main__":
 
     st.download_button("📥 Download Finalized Script", data=script_content, file_name="xrp_legacy_yield_vault.py", mime="text/plain")
 
-st.subheader("3. What To Do Next")
+# === EXPANDED NEXT STEPS ===
+st.subheader("3. What To Do Next (Step-by-Step)")
+
 st.markdown("""
-1. Download the script above.
-2. Run it on your device (Pythonista / Termux / Python).
-3. Follow the printed instructions and sign transactions with Xaman + Tangem.
+**Even if you don't know coding, you can do this:**
+
+1. **Download the script** using the button above.
+
+2. **Install a simple app on your phone**:
+   - **iPhone / iPad**: Search for "Pythonista" in the App Store (one-time small purchase).
+   - **Android**: Install "Termux" from F-Droid or Play Store.
+
+3. **Open the downloaded script**:
+   - Copy the entire content of the downloaded file.
+   - Paste it into the Python app on your phone.
+
+4. **Run the script**:
+   - Tap the Run button. It will show you your schedule, notice dates, and instructions.
+
+5. **Create the vault and releases**:
+   - Use the **Xaman wallet app** + your **Tangem card** to sign the transactions shown in the script.
+   - Start by depositing your XRP into a Soil or XLS-65 vault.
+
+6. **For future additions**: Run the script again and use the `prepare_deposit` instructions when you want to add more XRP.
+
+**You do NOT need to understand the code** — just copy, paste, and follow the printed instructions.
 """)
 
 st.caption("Test everything on XRPL Testnet first. Not financial or legal advice.")
